@@ -2,6 +2,15 @@
 
 Hacker News から関心に合う記事だけを選び、毎朝読むための個人用アプリです。Mac mini 上で常駐させます。設計の詳細は `docs/design.md` にあります。
 
+## 画面
+
+- `/` は最新のダイジェスト、`/digests/next` は次回確定分である
+- `/stories/:id` は記事ページで、要約と日本語訳を出す
+- `/labeling` は直近7日の未評価の記事に、キー操作で評価を付ける画面である
+- `/profile/edit` はプロファイルの編集と、再採点の結果を確認する
+
+日本語訳だけは、ローカルの ollama ではなく codex CLI(ChatGPT の利用枠)を子プロセスで呼びます。codex は Node 経由で起動するので、Node と codex のログイン済みの環境が前提です。
+
 ## 初回セットアップ
 
 ollama を起動し、`qwen3-embedding:4b` と `qwen3.8:27b-mlx` を取得しておきます。
@@ -57,6 +66,10 @@ bin/rails runner 'EvaluateStoryJob.perform_now(Story.first)'
 bin/rails runner 'FinalizeDigestJob.perform_now'
 bin/rails server -p 3101
 ```
+
+## システムテスト
+
+ブラウザ操作のテストは `bin/rails test:system` で動かします。ヘッドレスの Google Chrome を使い、`bin/rails test` には含まれません。
 
 ## 検証タスクの使い方
 

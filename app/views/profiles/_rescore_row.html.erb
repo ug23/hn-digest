@@ -1,0 +1,6 @@
+<%# 閾値以上かどうかが旧と新で変わった行は強調する。new が nil のうちは再採点待ち。old が nil の記事は表に出ない(出ても描画は壊れない) %>
+<tr id="<%= dom_id(story, :rescore) %>" class="<%= "flip" if old && new && old.above_threshold? != new.above_threshold? %>">
+  <td><%= link_to story.title, story_path(story) %></td>
+  <td><%= evaluation_label(old) %></td>
+  <td><%= evaluation_label(new) %></td>
+</tr>

@@ -22,14 +22,14 @@ module Ollama
   # 注意: MLX 版のモデルは format（JSON Schema）の制約が効かない、あるいはハングすることがある
   # （Design Doc 3.1節の実測）。format に頼らず、呼び出し側が system プロンプトに出力キーと型を書くこと。
   # さらに num_predict・読み取りタイムアウト・ここでの検証で守る。
-  def chat_json(system:, user:, schema:, model: CHAT_MODEL)
+  def chat_json(system:, user:, schema:, model: CHAT_MODEL, num_predict: 800)
     attempts = 0
     begin
       attempts += 1
       body = {
         model: model, stream: false, format: schema, think: false,
         messages: [ { role: "system", content: system }, { role: "user", content: user } ],
-        options: { temperature: 0, num_ctx: 16384, num_predict: 800 }
+        options: { temperature: 0, num_ctx: 16384, num_predict: num_predict }
       }
       content = post("/api/chat", body, read_timeout: 180).dig("message", "content").to_s
       hash = JSON.parse(content[/\{.*\}/m] || content) # 前後に余計な文字があっても最初の { から最後の } までを取る

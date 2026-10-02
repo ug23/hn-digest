@@ -24,6 +24,11 @@
   </head>
 
   <body>
+    <nav class="site">
+      <%= link_to "ダイジェスト", root_path %>
+      <%= link_to "ラベリング", labeling_path %>
+      <%= link_to "プロファイル", edit_profile_path %>
+    </nav>
     <%= yield %>
   </body>
 </html>

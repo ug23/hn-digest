@@ -1,0 +1,34 @@
+<h1>プロファイル(現行は第<%= @profile.version %>版)</h1>
+
+<% if @error %>
+  <p class="error"><%= @error %></p>
+<% end %>
+
+<%# 保存すると現行版を書き換えず、新しい版を作る。作った直後から再採点が始まる %>
+<%= form_with scope: :profile, url: profile_path, method: :patch, class: "profile-form" do |f| %>
+  <%= f.label :description, "関心の説明" %>
+  <%= f.text_area :description, value: @form[:description], rows: 10 %>
+  <%= f.label :tag_weights, "タグの重み(1行1件、「タグ: 重み」。重みは整数)" %>
+  <%= f.text_area :tag_weights, value: @form[:tag_weights], rows: 8 %>
+  <%= f.label :excluded_domains, "除外ドメイン(1行1件)" %>
+  <%= f.text_area :excluded_domains, value: @form[:excluded_domains], rows: 3 %>
+  <%= f.label :excluded_keywords, "除外キーワード(1行1件)" %>
+  <%= f.text_area :excluded_keywords, value: @form[:excluded_keywords], rows: 3 %>
+  <%= f.label :score_threshold, "スコアの閾値(1〜10)" %>
+  <%= f.number_field :score_threshold, value: @form[:score_threshold], min: 1, max: 10 %>
+  <%= f.submit "新しい版として保存" %>
+<% end %>
+
+<% if @olds %>
+  <%# 再採点の差し込み先を購読する。EvaluateStoryJob が1件終わるたびに、該当する行(tr)を Turbo が差し替える %>
+  <%= turbo_stream_from @profile, :rescore %>
+  <h2>再採点(第<%= @profile.version - 1 %>版 → 第<%= @profile.version %>版)</h2>
+  <table class="rescore">
+    <thead><tr><th>記事</th><th>旧</th><th>新</th></tr></thead>
+    <tbody>
+      <% @olds.each do |old| %>
+        <%= render "profiles/rescore_row", story: old.story, old: old, new: @news[old.story_id] %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

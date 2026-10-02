@@ -1,0 +1,18 @@
+<%# 訳の状態表示。ジョブがこの id の要素ごと差し替える(broadcast_replace_to) %>
+<div id="translation_status" class="translation-status">
+  <% if story.content.to_s.size >= ContentFetcher::MAX_CHARS %>
+    <p class="note">本文が上限の<%= number_with_delimiter(ContentFetcher::MAX_CHARS) %>文字に達しているため、訳は途中までです(原文はここで打ち切られています)。</p>
+  <% end %>
+  <% if translation&.status == "running" && !translation.stale? %>
+    <p>翻訳中です。まとまりごとに下へ表示されます。</p>
+  <% elsif translation&.status == "done" %>
+  <% elsif story.body_text.nil? %>
+    <p>本文が無いため翻訳できません。</p>
+  <% elsif translation %>
+    <%# failed、または止まったまま取り残された running %>
+    <p class="error"><%= translation.stale? ? "翻訳が止まっています(再起動などで中断された可能性があります)。" : "翻訳に失敗しました: #{translation.error}" %></p>
+    <%= button_to "もう一度翻訳する", story_translation_path(story) %>
+  <% else %>
+    <%= button_to "翻訳する", story_translation_path(story) %>
+  <% end %>
+</div>

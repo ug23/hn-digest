@@ -3,6 +3,8 @@ class Story < ApplicationRecord
 
   has_many :evaluations, dependent: :destroy
   has_one :feedback, dependent: :destroy
+  has_one :summary, dependent: :destroy
+  has_one :translation, dependent: :destroy
 
   # 取得待ちで、再試行の時刻に達している記事
   scope :fetchable, -> { where(content_status: "pending").where("retry_after IS NULL OR retry_after <= ?", Time.current) }
@@ -12,6 +14,11 @@ class Story < ApplicationRecord
     host ? host.delete_prefix("www.") : "news.ycombinator.com"
   rescue URI::InvalidURIError
     "news.ycombinator.com"
+  end
+
+  # 翻訳と要約の入力になる本文。取得に失敗した記事では nil
+  def body_text
+    content.presence || story_text.presence
   end
 
   def hn_url

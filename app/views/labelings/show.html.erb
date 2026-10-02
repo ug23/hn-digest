@@ -1,0 +1,39 @@
+<h1>ラベリング</h1>
+
+<% if @evaluations.empty? %>
+  <p>評価待ちの記事はありません。</p>
+<% else %>
+  <%# data-controller で Stimulus の labeling コントローラ(app/javascript/controllers/labeling_controller.js)がこの要素に結び付く。
+      keydown@window はページのどこでのキー入力も受ける指定。turbo:submit-start はフォームの送信開始で、理由の送信なら次のカードへ進める %>
+  <div data-controller="labeling" data-action="keydown@window->labeling#key turbo:submit-start->labeling#submitted">
+    <p class="labeling-bar">
+      <span data-labeling-target="position"></span>
+      <small>J/K: 移動、U: 👍、D: 👎、Enter: 理由を保存して次へ</small>
+    </p>
+    <% @evaluations.each do |evaluation| %>
+      <% story = evaluation.story %>
+      <article class="card" data-labeling-target="card" hidden>
+        <%= link_to story.title, story.url || story.hn_url, class: "title", target: "_blank", rel: "noopener" %>
+        <div class="meta">
+          <%= link_to "記事ページ", story_path(story) %>
+          · <%= link_to "HN", story.hn_url, target: "_blank", rel: "noopener" %> · <%= story.domain %>
+        </div>
+        <div class="meta">
+          <% if evaluation.status == "scored" %>
+            スコア <strong><%= evaluation.score %></strong> <%= should_read_badge(evaluation) %>
+          <% else %>
+            <span class="badge"><%= evaluation.status %></span> <%= evaluation.note %>
+          <% end %>
+        </div>
+        <% if (summary = story.summary) %>
+          <%= key_points_list(summary) %>
+          <p><%= summary.discussion %></p>
+        <% elsif evaluation.reasons.any? %>
+          <ul class="reasons"><% evaluation.reasons.each do |r| %><li><%= r %></li><% end %></ul>
+        <% end %>
+        <%= render "feedbacks/feedback", story: story %>
+      </article>
+    <% end %>
+    <p data-labeling-target="done" hidden>すべて終わりました。</p>
+  </div>
+<% end %>

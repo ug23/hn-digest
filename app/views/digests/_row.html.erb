@@ -6,7 +6,7 @@
       <% if evaluation.llm_score != evaluation.score %>
         <small>LLM <%= evaluation.llm_score %><%= format("%+d", evaluation.score - evaluation.llm_score) %></small>
       <% end %>
-      <span class="badge <%= evaluation.should_read %>"><%= evaluation.should_read %></span>
+      <%= should_read_badge(evaluation) %>
     <% else %>
       <span class="badge"><%= evaluation.status %></span>
     <% end %>
@@ -15,13 +15,15 @@
     <%= link_to story.title, story.url || story.hn_url, class: "title", target: "_blank", rel: "noopener" %>
     <div class="meta">
       <%= link_to "HN", story.hn_url, target: "_blank", rel: "noopener" %>
+      · <%= link_to "記事ページ", story_path(story) %>
       · <%= story.domain %> · <%= story.points %> points · <%= story.num_comments %> comments
       <% unless evaluation.status == "scored" && shown %>
         · <%= evaluation.note %> <%= "similarity #{evaluation.similarity.round(3)}" if evaluation.similarity %>
       <% end %>
     </div>
-    <% if evaluation.tags.any? %>
-      <div class="tags"><% evaluation.tags.each do |tag| %><span><%= tag %></span><% end %></div>
+    <%= tag_list(evaluation.tags) %>
+    <% if (summary = story.summary) %>
+      <%= key_points_list(summary) %>
     <% end %>
     <% if evaluation.reasons.any? %>
       <ul class="reasons"><% evaluation.reasons.each do |r| %><li><%= r %></li><% end %></ul>

@@ -28,3 +28,8 @@ production:
       threads: 1
       processes: 1
       polling_interval: 1
+    # external は codex CLI を子プロセスで呼ぶ翻訳用。ollama を使わないので、llm キューを塞がない
+    - queues: [external]
+      threads: 1
+      processes: 1
+      polling_interval: 1

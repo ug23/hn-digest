@@ -19,5 +19,9 @@ class CollectStoriesJob < ApplicationJob
     recent.where(content_status: %w[fetched failed]).where.not(id: evaluated).find_each do |story|
       EvaluateStoryJob.perform_later(story, profile)
     end
+
+    # 閾値以上なのに要約が無い記事(ollama が止まっていた間の取りこぼし)にも要約を積む
+    above = Evaluation.where(profile: profile, status: "scored").where("score >= ?", profile.score_threshold).select(:story_id)
+    recent.where(id: above).where.not(id: Summary.select(:story_id)).find_each { |story| SummarizeStoryJob.perform_later(story) }
   end
 end

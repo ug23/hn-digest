@@ -10,7 +10,7 @@ class DigestsController < ApplicationController
     @next_date = dates.find { |d| !@next && d > @date }
 
     # 確定済みの日はその日の記事、next は未確定で閾値以上の記事
-    scored = Evaluation.includes(story: :feedback).where(profile: @profile, status: "scored")
+    scored = Evaluation.includes(story: [ :feedback, :summary ]).where(profile: @profile, status: "scored")
     scored = if @next
       scored.joins(:story).where(stories: { digested_on: nil }).where("evaluations.score >= ?", @profile.score_threshold)
     else
@@ -27,7 +27,7 @@ class DigestsController < ApplicationController
   def others(shown)
     window_end = @next ? Time.current : @date.in_time_zone.change(hour: 6)
     window_start = @next ? latest_six_am : window_end - 1.day
-    Evaluation.includes(story: :feedback).where(profile: @profile, created_at: window_start..window_end)
+    Evaluation.includes(story: [ :feedback, :summary ]).where(profile: @profile, created_at: window_start..window_end)
               .where.not(id: shown.map(&:id)).sort_by { |e| [ -(e.score || 0), -(e.similarity || 0) ] }
   end
 

@@ -1,0 +1,8 @@
+<section class="segment">
+  <%# 訳文は信頼できない出力なので、HTML として解釈させずエスケープして出す(改行は CSS の pre-wrap で保つ) %>
+  <p class="ja"><%= segment["ja"] %></p>
+  <details>
+    <summary>原文</summary>
+    <p class="source"><%= segment["source"] %></p>
+  </details>
+</section>

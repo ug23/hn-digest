@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_100300) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_03_100100) do
   create_table "evaluations", force: :cascade do |t|
     t.integer "story_id", null: false
     t.integer "profile_id", null: false
@@ -75,7 +75,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_100300) do
     t.index ["hn_id"], name: "index_stories_on_hn_id", unique: true
   end
 
+  create_table "summaries", force: :cascade do |t|
+    t.integer "story_id", null: false
+    t.json "key_points", default: [], null: false
+    t.text "relevance"
+    t.text "discussion"
+    t.text "verdict"
+    t.string "model"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["story_id"], name: "index_summaries_on_story_id", unique: true
+  end
+
+  create_table "translations", force: :cascade do |t|
+    t.integer "story_id", null: false
+    t.json "segments", default: [], null: false
+    t.string "status", default: "running", null: false
+    t.string "model"
+    t.string "error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["story_id"], name: "index_translations_on_story_id", unique: true
+  end
+
   add_foreign_key "evaluations", "profiles"
   add_foreign_key "evaluations", "stories"
   add_foreign_key "feedbacks", "stories"
+  add_foreign_key "summaries", "stories"
+  add_foreign_key "translations", "stories"
 end

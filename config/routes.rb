@@ -4,8 +4,11 @@ Rails.application.routes.draw do
 
   root "digests#show"
   get "digests/:date", to: "digests#show", as: :digest, constraints: { date: /next|\d{4}-\d{2}-\d{2}/ }
-  # 1記事に評価は1件なので単数リソース。POST /stories/:story_id/feedback になる
-  resources :stories, only: [] do
+  # feedback と translation は1記事に1件なので単数リソース。POST /stories/:story_id/feedback になる
+  resources :stories, only: :show do
     resource :feedback, only: :create
+    resource :translation, only: :create
   end
+  resource :labeling, only: :show
+  resource :profile, only: [ :edit, :update ]
 end

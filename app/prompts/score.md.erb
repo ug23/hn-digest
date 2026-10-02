@@ -28,6 +28,21 @@
 - skim: 要約で足りる
 - no: 読まなくてよい
 
+<% if past_ratings[:liked].any? || past_ratings[:disliked].any? -%>
+## 読者の過去の評価
+
+<% { "高く評価した記事" => past_ratings[:liked], "低く評価した記事" => past_ratings[:disliked] }.each do |label, feedbacks| -%>
+<% next if feedbacks.empty? -%>
+<%= label %>(新しい順。理由は読者が書いたもの):
+
+<% feedbacks.each do |f| -%>
+- <%= f.story.title %>: <%= f.reason %>
+<% end -%>
+
+<% end -%>
+採点の参考にしてください。ただし、過去の記事と似ているというだけで高く採点したり、低く採点したりしないでください。
+<% end -%>
+
 ## タグ
 
 記事に当てはまるタグを最大5個付けてください。次の語彙に当てはまるものは、必ず同じ綴りで使ってください。語彙に無いタグも自由に足して構いません。

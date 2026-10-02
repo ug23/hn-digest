@@ -1,0 +1,30 @@
+<%# 訳の差し込み先を購読する。ジョブが broadcast すると、Solid Cable 経由でこのページの該当要素へ Turbo が差し込む %>
+<%= turbo_stream_from @story, :translation %>
+
+<article class="story">
+  <h1><%= link_to @story.title, @story.url || @story.hn_url, target: "_blank", rel: "noopener" %></h1>
+  <div class="meta">
+    <%= link_to "HN", @story.hn_url, target: "_blank", rel: "noopener" %>
+    · <%= @story.domain %> · <%= @story.points %> points · <%= @story.num_comments %> comments
+    <% if @evaluation&.status == "scored" %>
+      · スコア <strong><%= @evaluation.score %></strong> <%= should_read_badge(@evaluation) %>
+    <% end %>
+  </div>
+  <%= tag_list(@evaluation.tags) if @evaluation %>
+
+  <% if (summary = @story.summary) %>
+    <h2>要約</h2>
+    <%= key_points_list(summary) %>
+    <dl class="summary">
+      <dt>仕事との接点</dt><dd><%= summary.relevance %></dd>
+      <dt>論点と反論</dt><dd><%= summary.discussion %></dd>
+      <dt>精読すべきか</dt><dd><%= summary.verdict %></dd>
+    </dl>
+  <% end %>
+
+  <h2>日本語訳</h2>
+  <%= render "translations/status", story: @story, translation: @story.translation %>
+  <div id="translation_segments">
+    <%= render partial: "translations/segment", collection: @story.translation&.segments || [], as: :segment %>
+  </div>
+</article>
