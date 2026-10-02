@@ -35,4 +35,14 @@ class FeedbacksControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_nil @story.reload.feedback
   end
+
+  test "評価も理由も空の送信では Feedback を作らず、既存の評価も消さない" do
+    post story_feedback_path(@story), params: { reason: "  " }, as: :turbo_stream
+    assert_response :success
+    assert_nil @story.reload.feedback
+
+    post story_feedback_path(@story), params: { rating: 1 }
+    post story_feedback_path(@story), params: { reason: "" }
+    assert_equal 1, @story.reload.feedback.rating
+  end
 end

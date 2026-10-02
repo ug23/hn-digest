@@ -3,9 +3,10 @@
   <%# button_to は小さな form を作る。Turbo が fetch で POST し、応答の turbo-stream を適用する %>
   <%= button_to "👍", story_feedback_path(story), params: { rating: 1 }, data: { rating: 1 }, class: ("on" if story.feedback&.rating == 1), form_class: "rate" %>
   <%= button_to "👎", story_feedback_path(story), params: { rating: -1 }, data: { rating: -1 }, class: ("on" if story.feedback&.rating == -1), form_class: "rate" %>
-  <%# Enter で同じ create に送信される。reason だけを送るので rating は変わらない %>
+  <%# Enter でも送信ボタンでも同じ create に送信される。reason だけを送るので rating は変わらない %>
   <%= form_with url: story_feedback_path(story), class: "reason" do %>
-    <%= text_field_tag :reason, story.feedback&.reason, placeholder: "一言理由(任意)", autocomplete: "off", id: nil,
+    <%= text_field_tag :reason, story.feedback&.reason, placeholder: "一言理由(任意)", autocomplete: "off", enterkeyhint: "send", id: nil,
       data: { labeling_target: "reason", action: "keydown.esc->labeling#blur" } %>
+    <%= button_tag "保存して次へ", type: "submit", class: "submit-reason" %>
   <% end %>
 </div>

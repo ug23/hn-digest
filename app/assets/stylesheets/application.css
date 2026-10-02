@@ -25,6 +25,7 @@ a { color: #0b63c5; }
 .feedback button { min-width: 3rem; min-height: 2.75rem; font-size: 1.2rem; border: 1px solid #8886; border-radius: 0.5rem; background: transparent; }
 .feedback button.on { background: #2a9d4a33; border-color: #2a9d4a; }
 .feedback .reason { flex: 1; min-width: 10rem; }
+.feedback .submit-reason { display: none; font-size: 0.9rem; padding: 0 0.6rem; white-space: nowrap; }
 .feedback input[type=text] { box-sizing: border-box; width: 100%; min-height: 2.75rem; padding: 0 0.6rem; font-size: 1rem; border: 1px solid #8886; border-radius: 0.5rem; }
 nav.site { display: flex; gap: 1.2rem; margin-bottom: 0.5rem; }
 nav.site a { padding: 0.5rem 0; }
@@ -38,7 +39,16 @@ nav.site a { padding: 0.5rem 0; }
 .note { font-size: 0.85rem; opacity: 0.8; }
 .error { color: #c0392b; }
 .card { padding: 0.5rem 0; }
-.labeling-bar { display: flex; justify-content: space-between; align-items: baseline; }
+/* ラベリング画面の操作部は画面下に固定する。本文の末尾が隠れないよう .labeling に余白を取る */
+.labeling { padding-bottom: 9rem; }
+.card .feedback, .labeling-nav { position: fixed; left: 0; right: 0; max-width: 46rem; margin: 0 auto; box-sizing: border-box; padding: 0.4rem 0.75rem; background: Canvas; }
+.card .feedback { bottom: 3.6rem; flex-wrap: nowrap; border-top: 1px solid #8884; }
+.card .feedback .reason { min-width: 0; display: flex; gap: 0.4rem; }
+.card .feedback .reason input { flex: 1; min-width: 0; }
+.card .feedback .submit-reason { display: block; }
+.labeling-nav { bottom: 0; display: flex; gap: 0.5rem; }
+.labeling-nav button { flex: 1; min-height: 2.75rem; font-size: 1rem; border: 1px solid #8886; border-radius: 0.5rem; background: transparent; }
+.labeling-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 0.5rem; }
 .profile-form { display: flex; flex-direction: column; gap: 0.3rem; }
 .profile-form textarea, .profile-form input[type=number] { box-sizing: border-box; width: 100%; padding: 0.4rem; font: inherit; border: 1px solid #8886; border-radius: 0.5rem; }
 .profile-form label { margin-top: 0.6rem; font-weight: 600; }

@@ -21,6 +21,7 @@ class FeedbacksController < ApplicationController
   private
 
   def save_feedback(story, attrs)
+    return true if story.feedback.nil? && attrs.values.all?(&:nil?) # 評価も理由も空なら作らない(画面は次へ進んでよい)
     (story.feedback || story.build_feedback).update(attrs)
   rescue ActiveRecord::RecordNotUnique # 二重タップで同時に作られて一意索引に当たった場合は、既存の行を更新する
     story.reload.feedback.update(attrs)

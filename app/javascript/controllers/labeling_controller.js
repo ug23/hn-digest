@@ -18,6 +18,10 @@ export default class extends Controller {
   // Turbo が評価欄を差し替えると新しい理由入力欄がここへ届くので、評価を送った直後だけフォーカスを移す。
   // (画面を開いた時にも全入力欄分が呼ばれるため、focusReason の旗で区別する)
   reasonTargetConnected(input) {
+    if (this.draft?.card.contains(input)) { // 評価の送信前に打っていた未送信の理由を、差し替え後の入力欄へ戻す
+      input.value = this.draft.value
+      this.draft = null
+    }
     if (this.focusReason && this.cardTargets[this.index]?.contains(input)) {
       this.focusReason = false
       input.focus()
@@ -50,10 +54,23 @@ export default class extends Controller {
     event.target.blur()
   }
 
-  // フォームの送信が始まったとき。理由のフォーム(Enter で送信される)なら、そのまま次のカードへ進む。
-  // 評価のフォームでは進まない(理由を書けるように)
+  // 前へ/次へボタン。J/K と同じで何も保存しない
+  previous() { this.move(-1) }
+  next() { this.move(1) }
+
+  // フォームの送信が始まったとき。理由のフォーム(Enter か送信ボタン)なら、入力欄のフォーカスを外して
+  // (ソフトウェアキーボードを閉じる)そのまま次のカードへ進む。評価のフォームでは進まない
   submitted(event) {
-    if (event.target.classList.contains("reason")) this.move(1)
+    if (event.target.classList.contains("rate")) { // 評価欄は応答で差し替わるので、未送信の理由を控えておく
+      const card = event.target.closest("[data-labeling-target=card]")
+      const input = card?.querySelector("input[name=reason]")
+      this.draft = input && input.value !== input.defaultValue ? { card, value: input.value } : null // 空に消した編集も含む
+    }
+    if (!event.target.classList.contains("reason")) return
+    this.draft = null // 評価の応答が失敗して残った控えや旗は、理由の送信で捨てる
+    this.focusReason = false
+    document.activeElement?.blur()
+    this.move(1)
   }
 
   // index が cardTargets.length のときは「すべて終わり」の表示
