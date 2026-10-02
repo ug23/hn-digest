@@ -26,11 +26,18 @@ rm ~/Library/LaunchAgents/com.ug23.hn-digest.plist
 
 ## tailscale serve での公開
 
-production は `force_ssl` が有効なので、tailnet 内にだけ HTTPS で公開します。
+production は `force_ssl` が有効なので、tailnet 内にだけ HTTPS で公開します。この Mac の 443番は別のアプリが `tailscale serve` で使っているため、8443番を使います。`--https` を付けずに実行すると 443番の設定を上書きするので、付け忘れないでください。
 
 ```sh
-tailscale serve --bg 3100
+T=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+$T serve --bg --https=8443 http://127.0.0.1:3100
+$T serve status
+
+# 公開をやめる
+$T serve --https=8443 off
 ```
+
+公開先は `https://<マシン名>.<tailnet名>.ts.net:8443/` です。
 
 ## 更新手順
 
