@@ -9,7 +9,17 @@
 #     priority: 2
 #     schedule: at 5am every day
 
+# Solid Queue のスケジューラがこのファイルを見て、時刻になるとジョブを積む（cron の代わり）。
 production:
+  collect_stories:
+    class: CollectStoriesJob
+    queue: default
+    schedule: every hour at minute 5
+  finalize_digest:
+    class: FinalizeDigestJob
+    queue: default
+    schedule: "0 6 * * * Asia/Tokyo"
   clear_solid_queue_finished_jobs:
+    queue: default # 指定しないと solid_queue_recurring キューに入り、どの worker も取らない
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12

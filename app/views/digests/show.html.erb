@@ -1,0 +1,26 @@
+<h1>HN Digest: <%= @next ? "次回の確定分(next)" : l(@date, format: :long) %></h1>
+
+<nav class="pager">
+  <%= link_to "← #{@prev_date}", digest_path(@prev_date.iso8601) if @prev_date %>
+  <%= link_to "#{@next_date} →", digest_path(@next_date.iso8601) if @next_date %>
+  <%= link_to "next →", digest_path("next") if !@next && @next_date.nil? %>
+  <% if params[:all] == "1" %>
+    <%= link_to "閾値以上だけ表示", url_for(all: nil) %>
+  <% else %>
+    <%= link_to "すべて表示", url_for(all: 1) %>
+  <% end %>
+</nav>
+
+<% if @evaluations.empty? %>
+  <p>表示できる記事はまだありません。</p>
+<% end %>
+<ol class="rows">
+  <%= render partial: "row", collection: @evaluations, as: :evaluation, locals: { shown: true } %>
+</ol>
+
+<% if @others %>
+  <h2>閾値未満・絞り込み・除外(<%= @others.size %>件)</h2>
+  <ol class="rows">
+    <%= render partial: "row", collection: @others, as: :evaluation, locals: { shown: false } %>
+  </ol>
+<% end %>

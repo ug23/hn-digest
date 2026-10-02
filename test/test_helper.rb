@@ -4,12 +4,15 @@ require "rails/test_help"
 
 module ActiveSupport
   class TestCase
-    # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
-    # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-    fixtures :all
+    def build_profile(**attrs)
+      Profile.create!({ version: (Profile.maximum(:version) || 0) + 1, description: "d" }.merge(attrs))
+    end
 
-    # Add more helper methods to be used by all tests here...
+    def build_story(**attrs)
+      @seq = (@seq || 0) + 1
+      Story.create!({ hn_id: @seq + rand(1_000_000) * 100, title: "Title #{@seq}", url: "https://example.com/#{@seq}" }.merge(attrs))
+    end
   end
 end

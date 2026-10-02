@@ -1,0 +1,6 @@
+{
+  "hits": [
+    {"objectID": "100", "title": "Postgres internals", "url": "https://www.example.com/pg", "author": "alice", "points": 120, "num_comments": 45, "created_at_i": 1790000000, "story_text": null},
+    {"objectID": "101", "title": "Ask HN: How do you test?", "author": "bob", "points": 40, "num_comments": 12, "created_at_i": 1790003600, "story_text": "<p>First line<p>Second &amp; third"}
+  ]
+}

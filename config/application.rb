@@ -33,7 +33,8 @@ module HnDigest
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
+    # 画面の日付と 06:00 の確定を日本時間に揃える（DB には UTC で保存される）
+    config.time_zone = "Asia/Tokyo"
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

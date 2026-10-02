@@ -1,0 +1,31 @@
+<% story = evaluation.story %>
+<li class="row <%= "dim" unless shown %>">
+  <div class="score">
+    <% if evaluation.status == "scored" %>
+      <strong><%= evaluation.score %></strong>
+      <% if evaluation.llm_score != evaluation.score %>
+        <small>LLM <%= evaluation.llm_score %><%= format("%+d", evaluation.score - evaluation.llm_score) %></small>
+      <% end %>
+      <span class="badge <%= evaluation.should_read %>"><%= evaluation.should_read %></span>
+    <% else %>
+      <span class="badge"><%= evaluation.status %></span>
+    <% end %>
+  </div>
+  <div class="body">
+    <%= link_to story.title, story.url || story.hn_url, class: "title", target: "_blank", rel: "noopener" %>
+    <div class="meta">
+      <%= link_to "HN", story.hn_url, target: "_blank", rel: "noopener" %>
+      · <%= story.domain %> · <%= story.points %> points · <%= story.num_comments %> comments
+      <% unless evaluation.status == "scored" && shown %>
+        · <%= evaluation.note %> <%= "similarity #{evaluation.similarity.round(3)}" if evaluation.similarity %>
+      <% end %>
+    </div>
+    <% if evaluation.tags.any? %>
+      <div class="tags"><% evaluation.tags.each do |tag| %><span><%= tag %></span><% end %></div>
+    <% end %>
+    <% if evaluation.reasons.any? %>
+      <ul class="reasons"><% evaluation.reasons.each do |r| %><li><%= r %></li><% end %></ul>
+    <% end %>
+    <%= render "feedbacks/feedback", story: story %>
+  </div>
+</li>

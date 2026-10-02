@@ -1,5 +1,5 @@
 default: &default
-  dispatchers:
+  dispatchers: &default_dispatchers
     - polling_interval: 1
       batch_size: 500
   workers:
@@ -14,5 +14,17 @@ development:
 test:
   <<: *default
 
+# production だけ worker を分ける。Solid Queue はキュー名で worker を割り当てる。
+# llm キューを 1 スレッド 1 プロセスにして、ollama への依頼を直列にする。
+# 注意: ここに列挙していないキューのジョブは、誰にも実行されない。
 production:
-  <<: *default
+  dispatchers: *default_dispatchers
+  workers:
+    - queues: [default]
+      threads: 3
+      processes: 1
+      polling_interval: 1
+    - queues: [llm]
+      threads: 1
+      processes: 1
+      polling_interval: 1

@@ -55,3 +55,6 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "ruby-readability", "~> 0.7.3", require: "readability"
+gem "pdf-reader", "~> 2.16"

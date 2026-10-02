@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.ug23.hn-digest</string>
+  <key>WorkingDirectory</key>
+  <string>/Users/ug23/dev/hn-digest</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/ug23/.rbenv/shims/ruby</string>
+    <string>bin/rails</string>
+    <string>server</string>
+    <string>-e</string>
+    <string>production</string>
+    <string>-b</string>
+    <string>127.0.0.1</string>
+    <string>-p</string>
+    <string>3100</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/ug23/.rbenv/shims:/opt/homebrew/bin:/usr/bin:/bin</string>
+    <key>RAILS_ENV</key>
+    <string>production</string>
+    <!-- config/puma.rb の `plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]` を有効にし、Puma の中で Solid Queue を動かす -->
+    <key>SOLID_QUEUE_IN_PUMA</key>
+    <string>1</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/ug23/dev/hn-digest/log/launchd.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/ug23/dev/hn-digest/log/launchd.log</string>
+</dict>
+</plist>

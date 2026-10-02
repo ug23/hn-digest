@@ -1,10 +1,28 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+/* Propshaft は変換せずに配るだけなので、素の CSS をそのまま書く。スマホ幅を基準にしている */
+:root { color-scheme: light dark; }
+body { font: 16px/1.6 -apple-system, "Hiragino Sans", sans-serif; margin: 0 auto; padding: 0.75rem; max-width: 46rem; }
+h1 { font-size: 1.25rem; }
+h2 { font-size: 1.05rem; margin-top: 2rem; }
+a { color: #0b63c5; }
+.pager { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+.pager a { padding: 0.5rem 0; }
+.rows { list-style: none; margin: 0; padding: 0; }
+.row { display: flex; gap: 0.75rem; padding: 0.9rem 0; border-top: 1px solid #8884; }
+.row.dim { opacity: 0.55; }
+.score { flex: none; width: 3.5rem; text-align: center; }
+.score strong { display: block; font-size: 1.6rem; line-height: 1.1; }
+.score small { display: block; font-size: 0.7rem; }
+.badge { display: inline-block; padding: 0 0.4rem; border-radius: 0.6rem; font-size: 0.75rem; background: #8883; }
+.badge.yes { background: #2a9d4a; color: #fff; }
+.body { min-width: 0; flex: 1; }
+.title { font-weight: 600; overflow-wrap: anywhere; }
+.meta { font-size: 0.85rem; opacity: 0.8; }
+.tags span { display: inline-block; margin: 0.2rem 0.3rem 0 0; padding: 0 0.4rem; font-size: 0.75rem; border: 1px solid #8886; border-radius: 0.3rem; }
+.reasons { margin: 0.4rem 0; padding-left: 1.1rem; font-size: 0.9rem; }
+.feedback { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+.feedback form { margin: 0; }
+/* 指で押せる大きさ(44px 以上) */
+.feedback button { min-width: 3rem; min-height: 2.75rem; font-size: 1.2rem; border: 1px solid #8886; border-radius: 0.5rem; background: transparent; }
+.feedback button.on { background: #2a9d4a33; border-color: #2a9d4a; }
+.feedback .reason { flex: 1; min-width: 10rem; }
+.feedback input[type=text] { box-sizing: border-box; width: 100%; min-height: 2.75rem; padding: 0 0.6rem; font-size: 1rem; border: 1px solid #8886; border-radius: 0.5rem; }
