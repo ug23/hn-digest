@@ -3,7 +3,7 @@ class EvaluateStoryJob < ApplicationJob
   queue_as :llm
   retry_on Ollama::Error, wait: 10.minutes, attempts: 3
 
-  # qwen3-embedding は検索する側（クエリ）に指示文を付けると精度が上がる
+  # qwen3-embedding は検索する側（クエリ）に指示文を付けると精度が上がる。別の埋め込みモデルでは不要か、別の形式になりうる
   QUERY_PREFIX = "Instruct: Given a reader's interest profile, retrieve articles the reader would find worth reading\nQuery: ".freeze
 
   # cutoff は一次フィルタの基準値。RescoreJob は全記事で同じ値を使うため、引数で受け取れるようにしてある（nil は「絞らない」）

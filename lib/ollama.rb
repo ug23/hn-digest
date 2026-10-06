@@ -5,9 +5,11 @@ module Ollama
   class Error < StandardError; end
   class InvalidResponse < Error; end
 
-  BASE_URL = "http://localhost:11434".freeze
-  EMBED_MODEL = "qwen3-embedding:4b".freeze
-  CHAT_MODEL = "qwen3.8:27b-mlx".freeze
+  # 接続先とモデルは環境変数で差し替えられる。既定値は開発時に使っていた構成である。
+  # 埋め込みモデルを変えると、保存済みのベクトルと次元や意味が合わなくなる(記事とプロファイルの埋め込みを作り直す)
+  BASE_URL = ENV.fetch("OLLAMA_HOST", "http://localhost:11434").freeze
+  EMBED_MODEL = ENV.fetch("OLLAMA_EMBED_MODEL", "qwen3-embedding:4b").freeze
+  CHAT_MODEL = ENV.fetch("OLLAMA_CHAT_MODEL", "qwen3.8:27b-mlx").freeze
 
   module_function
 
@@ -22,6 +24,7 @@ module Ollama
   # 注意: MLX 版のモデルは format（JSON Schema）の制約が効かない、あるいはハングすることがある
   # （Design Doc 3.1節の実測）。format に頼らず、呼び出し側が system プロンプトに出力キーと型を書くこと。
   # さらに num_predict・読み取りタイムアウト・ここでの検証で守る。
+  # think: false、num_ctx、temperature は既定のモデル(qwen3.8)向けの調整で、別のモデルでは効き方が違いうる
   def chat_json(system:, user:, schema:, model: CHAT_MODEL, num_predict: 800)
     attempts = 0
     begin
