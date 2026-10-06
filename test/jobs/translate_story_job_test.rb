@@ -11,10 +11,18 @@ class TranslateStoryJobTest < ActiveJob::TestCase
     Codex.define_singleton_method(:run, original)
   end
 
-  test "chunks は段落を6,000文字以内に束ねる" do
-    text = [ "a" * 3000, "b" * 2000, "c" * 2000, "d" * 100 ].join("\n\n")
+  test "chunks は最初だけ1,500文字以内、以降は6,000文字以内に段落を束ねる" do
+    text = [ "a" * 1000, "b" * 400, "c" * 3000, "d" * 2000, "e" * 1000 ].join("\n\n")
     chunks = TranslateStoryJob.chunks(text)
-    assert_equal [ "a" * 3000 + "\n\n" + "b" * 2000, "c" * 2000 + "\n\n" + "d" * 100 ], chunks
+    assert_equal [ "a" * 1000 + "\n\n" + "b" * 400, "c" * 3000 + "\n\n" + "d" * 2000, "e" * 1000 ], chunks
+    assert_equal text, chunks.join("\n\n") # 段落の順序は保たれる
+  end
+
+  test "chunks は短い本文なら1つ、最初の段落が1,500文字を超えるときはそれ単独で最初になる" do
+    assert_equal 1, TranslateStoryJob.chunks("hello").size
+    assert_equal 1, TranslateStoryJob.chunks([ "a" * 700, "b" * 798 ].join("\n\n")).size # ちょうど1,500文字
+    assert_equal 2, TranslateStoryJob.chunks([ "a" * 700, "b" * 799 ].join("\n\n")).size # 1,501文字
+    assert_equal [ "a" * 3000, "b" * 100 ], TranslateStoryJob.chunks([ "a" * 3000, "b" * 100 ].join("\n\n"))
   end
 
   test "chunks は空白だけの行も段落の区切りとする" do
@@ -28,7 +36,7 @@ class TranslateStoryJobTest < ActiveJob::TestCase
 
     sentences = ([ "b" * 2500 + "." ] * 3).join(" ") # 改行なし。文末で切る
     assert_equal [ 5003, 2501 ], TranslateStoryJob.chunks(sentences).map(&:size)
-    assert_equal [ 2001, 2001 ], TranslateStoryJob.chunks("あ" * 2000 + "。" + "あ" * 2000 + "。", 2500).map(&:size)
+    assert_equal [ 2001, 2001 ], TranslateStoryJob.chunks("あ" * 2000 + "。" + "あ" * 2000 + "。", 2500, 2500).map(&:size)
 
     solid = "c" * 13_000 # 切れ目が無ければ文字数
     assert_equal [ 6000, 6000, 1000 ], TranslateStoryJob.chunks(solid).map(&:size)

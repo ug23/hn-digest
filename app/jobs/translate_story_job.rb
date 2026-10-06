@@ -3,12 +3,14 @@ class TranslateStoryJob < ApplicationJob
   queue_as :external
 
   CHUNK_SIZE = 6000
+  # 最初のまとまりだけ小さくして、最初の訳文が画面に出るまでの待ちを短くする
+  FIRST_CHUNK_SIZE = 1500
 
-  # 本文を空行で段落に分け、CHUNK_SIZE 文字以内になるよう段落を束ねる。
+  # 本文を空行で段落に分け、CHUNK_SIZE 文字以内になるよう段落を束ねる。最初のまとまりだけ FIRST_CHUNK_SIZE 以内(段落単体がそれを超えるなら単独で1つ目になる)。
   # 1段落が CHUNK_SIZE を超えるときは、改行、文末、文字数の順で切る(空行の無い本文が1回で送られてタイムアウトしないように)
-  def self.chunks(text, limit = CHUNK_SIZE)
+  def self.chunks(text, limit = CHUNK_SIZE, first_limit = FIRST_CHUNK_SIZE)
     text.to_s.split(/\n[ \t]*\n/).map(&:strip).reject(&:empty?).flat_map { |p| cut(p, limit) }.each_with_object([]) do |paragraph, chunks|
-      if chunks.any? && chunks.last.size + 2 + paragraph.size <= limit
+      if chunks.any? && chunks.last.size + 2 + paragraph.size <= (chunks.size == 1 ? [ first_limit, limit ].min : limit)
         chunks.last << "\n\n" << paragraph
       else
         chunks << paragraph.dup

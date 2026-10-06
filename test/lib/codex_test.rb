@@ -26,6 +26,7 @@ class CodexTest < ActiveSupport::TestCase
       error = assert_raises(Codex::Error) { Codex.run("prompt") }
       assert_includes error.message, "--skip-git-repo-check"
       assert_includes error.message, "-o out.md -"
+      assert_not_includes error.message, " -m " if Codex::MODEL_NAME.nil?
     end
   end
 

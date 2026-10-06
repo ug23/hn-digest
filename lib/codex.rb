@@ -17,6 +17,10 @@ module Codex
   # テストで小さなシェルスクリプトに差し替えられるよう、実行ファイルは書き換え可能にしてある
   mattr_accessor :executable, default: "/opt/homebrew/bin/codex"
 
+  # 速いモデル(gpt-5.6-luna)は約45%速いが、技術用語の誤訳が出たため既定モデルを使う(nil なら -m を付けない)。
+  # 試すときはここにモデル名を入れる
+  MODEL_NAME = nil
+
   ARGS = [
     "exec",
     "--skip-git-repo-check", # git 管理外の一時ディレクトリで動かす
@@ -24,6 +28,7 @@ module Codex
     "--ignore-user-config", # ~/.codex/config.toml の MCP サーバなどを読まない(認証は別ファイルなので使える)
     "--ignore-rules",
     "--color", "never",
+    *(MODEL_NAME ? [ "-m", MODEL_NAME ] : []),
     "-c", 'default_permissions="tr"',
     "-c", 'permissions.tr.filesystem={":minimal"="read"}', # 読み取りを最小限に絞る(~/.ssh などは読めない)。書き込みとネットワークも不可
     "-c", 'web_search="disabled"',
