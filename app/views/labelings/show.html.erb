@@ -13,7 +13,7 @@
     <% @evaluations.each do |evaluation| %>
       <% story = evaluation.story %>
       <article class="card" data-labeling-target="card" hidden>
-        <%= link_to story.title, story.url || story.hn_url, class: "title", target: "_blank", rel: "noopener" %>
+        <%= link_to story.title, story.link_url, class: "title", target: "_blank", rel: "noopener" %>
         <div class="meta">
           <%= link_to "記事ページ", story_path(story) %>
           · <%= link_to "HN", story.hn_url, target: "_blank", rel: "noopener" %> · <%= story.domain %>

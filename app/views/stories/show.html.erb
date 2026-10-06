@@ -2,9 +2,9 @@
 <%= turbo_stream_from @story, :translation %>
 
 <article class="story">
-  <h1><%= link_to @story.title, @story.url || @story.hn_url, target: "_blank", rel: "noopener" %></h1>
+  <h1><%= external_link @story.title, @story.link_url %></h1>
   <div class="meta">
-    <%= link_to "HN", @story.hn_url, target: "_blank", rel: "noopener" %>
+    <%= external_link "HN", @story.hn_url %>
     · <%= @story.domain %> · <%= @story.points %> points · <%= @story.num_comments %> comments
     <% if @evaluation&.status == "scored" %>
       · スコア <strong><%= @evaluation.score %></strong> <%= should_read_badge(@evaluation) %>

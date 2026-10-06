@@ -8,6 +8,16 @@ class StoriesControllerTest < ActionDispatch::IntegrationTest
                        reasons: [ "理由" ], tags: [ "backend" ], should_read: "yes")
   end
 
+  test "http/https の URL はそのままリンクにし、それ以外は HN の記事ページに倒す" do
+    get story_path(@story)
+    assert_select "h1 a[href='#{@story.url}']"
+
+    @story.update!(url: "javascript:alert(1)")
+    get story_path(@story)
+    assert_select "a[href^='javascript']", count: 0
+    assert_select "h1 a[href='#{@story.hn_url}']"
+  end
+
   test "要約が無ければ要約の節を出さず、翻訳ボタンを出す" do
     get story_path(@story)
     assert_response :success

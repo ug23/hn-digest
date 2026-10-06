@@ -6,6 +6,11 @@ module ApplicationHelper
     evaluation.status == "scored" ? evaluation.score : evaluation.status
   end
 
+  # 別タブで開く外部リンク。href は Story#link_url / #hn_url のような安全な URL だけを渡す
+  def external_link(label, href, **options)
+    link_to(label, href, target: "_blank", rel: "noopener", **options)
+  end
+
   def key_points_list(summary)
     tag.ul(safe_join(summary.key_points.map { |point| tag.li(point) }), class: "key-points")
   end

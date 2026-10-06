@@ -21,6 +21,14 @@ class Story < ApplicationRecord
     content.presence || story_text.presence
   end
 
+  # href に出してよい記事の URL。http/https 以外(javascript: など)や不正な形式は HN の記事ページに倒す
+  def link_url
+    uri = url && URI.parse(url)
+    uri.is_a?(URI::HTTP) && uri.host.present? ? url : hn_url
+  rescue URI::InvalidURIError
+    hn_url
+  end
+
   def hn_url
     "https://news.ycombinator.com/item?id=#{hn_id}"
   end
