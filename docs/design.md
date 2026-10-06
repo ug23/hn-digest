@@ -398,7 +398,7 @@ Phase 1 で作るのは1つめの画面だけです。
 ## 10. 公開と常駐
 
 - Puma は `127.0.0.1:3100` で待ち受ける。LAN には直接公開しない
-- Tailscale の `tailscale serve` で、tailnet 内にだけ HTTPS で公開する。443番は別のアプリが使っているので、8443番で公開する。Rails 8 の production は `force_ssl` が既定で有効であり、この形なら設定を変えずに済む
+- Tailscale の `tailscale serve` で、tailnet 内にだけ HTTPS で公開する。443番を他の用途で使っている場合に備え、当時の運用では8443番で公開した。Rails 8 の production は `force_ssl` が既定で有効であり、この形なら設定を変えずに済む
 - launchd の plist はリポジトリの `config/launchd/` に置く。`~/Library/LaunchAgents/` への配置と `launchctl` の実行は、手順を示したうえで承認を得てから行う
 - 更新の手順は `git pull`、`bin/rails assets:precompile db:prepare`、`launchctl kickstart -k` の3つである。Propshaft は本番でアセットにダイジェストを付けるので、事前のコンパイルが要る
 
